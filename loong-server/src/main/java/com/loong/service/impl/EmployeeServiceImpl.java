@@ -1,25 +1,28 @@
 package com.loong.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.loong.constant.MessageConstant;
 import com.loong.constant.PasswordConstant;
 import com.loong.constant.StatusConstant;
 import com.loong.context.BaseContext;
 import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
+import com.loong.dto.EmployeePageQuery;
 import com.loong.entity.Employee;
 import com.loong.exception.AccountLockedException;
 import com.loong.exception.AccountNotFoundException;
-import com.loong.exception.BaseException;
 import com.loong.exception.PasswordErrorException;
 import com.loong.mapper.EmployeeMapper;
+import com.loong.result.PageResult;
 import com.loong.service.EmployeeService;
-
-import java.time.LocalDateTime;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -78,5 +81,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setStatus(StatusConstant.ENABLE);
         employeeMapper.insertData(employee);
 
+    }
+
+    /**
+     * query employee by page
+     *
+     * @param pageQuery
+     * @return
+     */
+    @Override
+    public PageResult queryByPage(EmployeePageQuery pageQuery) {
+        PageHelper.startPage(pageQuery.getPage(), pageQuery.getPageSize());
+
+        Page<Employee> page = employeeMapper.queryPage(pageQuery);
+
+        List records = page.getResult();
+        Long total = page.getTotal();
+
+        return new PageResult(total.intValue(), records);
+
+    }
+
+    @Override
+    public void modifyStatus(Long id, Integer status) {
+        employeeMapper.updateStatus(id, status);
     }
 }
