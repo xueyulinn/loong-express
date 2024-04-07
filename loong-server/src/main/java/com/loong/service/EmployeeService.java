@@ -1,5 +1,6 @@
 package com.loong.service;
 
+import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
 import com.loong.entity.Employee;
 
@@ -11,5 +12,7 @@ public interface EmployeeService {
      * @return
      */
     Employee login(EmployeeLoginDTO employeeLoginDTO);
+
+    void addEmployee(EmployeeDTO employeeDTO);
 
 }

@@ -1,6 +1,7 @@
 package com.loong.controller.admin;
 
 import com.loong.constant.JwtClaimsConstant;
+import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
 import com.loong.entity.Employee;
 import com.loong.properties.JwtProperties;
@@ -30,6 +31,22 @@ public class EmployeeController {
     private EmployeeService employeeService;
     @Autowired
     private JwtProperties jwtProperties;
+
+
+    /**
+     * add employee
+     *
+     * @param employeeDTO
+     * @return
+     */
+    @PostMapping()
+    public Result<String> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        
+        employeeService.addEmployee(employeeDTO);
+        
+        return Result.success();
+    }
+    
 
     /**
      * employee login
