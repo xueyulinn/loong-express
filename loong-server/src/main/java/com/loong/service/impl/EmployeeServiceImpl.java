@@ -41,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String password = employeeLoginDTO.getPassword();
 
         // 1、select employee by username
-        Employee employee = employeeMapper.getByUsername(username);
+        Employee employee = employeeMapper.selectByUsername(username);
 
         // 2、handle exception
         if (employee == null) {
@@ -93,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageResult queryByPage(EmployeePageQuery pageQuery) {
         PageHelper.startPage(pageQuery.getPage(), pageQuery.getPageSize());
 
-        Page<Employee> page = employeeMapper.queryPage(pageQuery);
+        Page<Employee> page = employeeMapper.selectLimit(pageQuery);
 
         List records = page.getResult();
         Long total = page.getTotal();
@@ -105,5 +105,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void modifyStatus(Long id, Integer status) {
         employeeMapper.updateStatus(id, status);
+    }
+
+    @Override
+    public Employee queryById(Long id) {
+
+        Employee employee = employeeMapper.selectById(id);
+
+        return employee;
+    }
+
+    @Override
+    public void editEmployee(EmployeeDTO employeeDTO) {
+
+        employeeMapper.updateUser(employeeDTO);
+
     }
 }

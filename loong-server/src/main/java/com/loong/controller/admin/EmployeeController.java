@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.jsf.FacesContextUtils;
 
 import com.loong.constant.JwtClaimsConstant;
 import com.loong.dto.EmployeeDTO;
@@ -27,6 +28,7 @@ import com.loong.utils.JwtUtil;
 import com.loong.vo.EmployeeLoginVO;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  * employee management
@@ -41,32 +43,50 @@ public class EmployeeController {
     @Autowired
     private JwtProperties jwtProperties;
 
+    @PutMapping()
+    public Result putMethodName(@RequestBody EmployeeDTO employeeDTO) {
+
+        employeeService.editEmployee(employeeDTO);
+
+        return Result.success();
+    }
+
     /**
-     * modify employee status
+     * query employee by id
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("{id}")
+    public Result<Employee> queryByID(@PathVariable Long id) {
+        Employee employee = employeeService.queryById(id);
+
+        return Result.success(employee);
+    }
+
+    /**
+     * enable or disable employee
      *
      * @param id
      * @param status
      * @return
      */
     @PostMapping("status/{status}")
-    public Result modifyStatus(@PathVariable Integer status,  Long id) {
+    public Result modifyStatus(@PathVariable Integer status, Long id) {
         employeeService.modifyStatus(id, status);
         return Result.success();
     }
 
     /**
-     * query employee by page
+     * query employee on page
      *
      * @param pageQuery
      * @return
      */
     @GetMapping("/page")
-    public Result<PageResult> queryByPage(@RequestParam Integer page, @RequestParam Integer pageSize) {
+    public Result<PageResult> queryByPage(EmployeePageQuery pageQuery) {
 
-        EmployeePageQuery pageQuery = EmployeePageQuery.builder()
-                .page(page)
-                .pageSize(pageSize)
-                .build();
+        log.info("query employee by page：{}", pageQuery);
 
         PageResult pageResult = employeeService.queryByPage(pageQuery);
 
@@ -74,7 +94,7 @@ public class EmployeeController {
     }
 
     /**
-     * add employee
+     * add new employee
      *
      * @param employeeDTO
      * @return
@@ -88,7 +108,7 @@ public class EmployeeController {
     }
 
     /**
-     * employee login
+     * login
      *
      * @param employeeLoginDTO
      * @return
