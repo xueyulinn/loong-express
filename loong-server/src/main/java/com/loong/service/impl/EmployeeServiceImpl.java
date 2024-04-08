@@ -16,6 +16,7 @@ import com.loong.context.BaseContext;
 import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
 import com.loong.dto.EmployeePageQuery;
+import com.loong.dto.EmployeePasswordDTO;
 import com.loong.entity.Employee;
 import com.loong.exception.AccountLockedException;
 import com.loong.exception.AccountNotFoundException;
@@ -117,8 +118,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void editEmployee(EmployeeDTO employeeDTO) {
-
         employeeMapper.updateUser(employeeDTO);
+    }
 
+    @Override
+    public void editPassword(EmployeePasswordDTO employeePasswordDTO) {
+
+        employeePasswordDTO.setEmpId(BaseContext.getCurrentId().intValue());
+
+        employeeMapper.updatePassword(employeePasswordDTO);
     }
 }

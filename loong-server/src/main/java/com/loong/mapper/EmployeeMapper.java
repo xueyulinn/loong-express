@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import com.github.pagehelper.Page;
 import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeePageQuery;
+import com.loong.dto.EmployeePasswordDTO;
 import com.loong.entity.Employee;
 
 @Mapper
@@ -35,5 +36,8 @@ public interface EmployeeMapper {
 
 
     void updateUser(EmployeeDTO employeeDTO);
+
+    @Update("update employee set password = #{newPassword} where id = #{empId}")
+    void updatePassword(EmployeePasswordDTO employeePasswordDTO);
 
 }

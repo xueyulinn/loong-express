@@ -19,6 +19,7 @@ import com.loong.constant.JwtClaimsConstant;
 import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
 import com.loong.dto.EmployeePageQuery;
+import com.loong.dto.EmployeePasswordDTO;
 import com.loong.entity.Employee;
 import com.loong.properties.JwtProperties;
 import com.loong.result.PageResult;
@@ -48,6 +49,18 @@ public class EmployeeController {
 
         employeeService.editEmployee(employeeDTO);
 
+        return Result.success();
+    }
+
+    /**
+     * edit password
+     *
+     * @param employeePasswordDTO
+     * @return
+     */
+    @PutMapping("/editPassword")
+    public Result editPassword(@RequestBody EmployeePasswordDTO employeePasswordDTO) {
+        employeeService.editPassword(employeePasswordDTO);
         return Result.success();
     }
 
