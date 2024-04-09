@@ -16,6 +16,9 @@
         <update id="updateUser">
                 update employee
                 <set>
+                        <if test="username != null and name != ''">
+                                username = #{username},
+                        </if>
                         <if test="name != null and name != ''">
                                 name = #{name},
                         </if>
@@ -26,7 +29,13 @@
                                 sex = #{sex},
                         </if>
                         <if test="idNumber != null and idNumber != ''">
-                                id_number = #{idNumber}
+                                id_number = #{idNumber},
+                        </if>
+                        <if test="updateTime != null">
+                                update_time = #{updateTime},
+                        </if>
+                        <if test="updateUser != null">
+                                update_user = #{updateUser}
                         </if>
                 </set>
                 <where>
