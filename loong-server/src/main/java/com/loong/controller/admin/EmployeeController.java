@@ -25,14 +25,14 @@ import com.loong.service.EmployeeService;
 import com.loong.utils.JwtUtil;
 import com.loong.vo.EmployeeLoginVO;
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * employee management
- */
+
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
+@Api(tags = "employee management")
 public class EmployeeController {
 
     @Autowired
