@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(PasswordConstant.DEFAULT_PASSWORD);
 
         employee.setStatus(StatusConstant.ENABLE);
-        employeeMapper.insertData(employee);
+        employeeMapper.insert(employee);
 
     }
 
@@ -119,7 +119,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         BeanUtils.copyProperties(employeeDTO, employee);
 
-        employeeMapper.updateUser(employee);
+        employeeMapper.update(employee);
     }
 
     @Override
