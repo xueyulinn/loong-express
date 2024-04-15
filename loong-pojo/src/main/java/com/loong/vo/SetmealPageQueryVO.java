@@ -1,19 +1,14 @@
-package com.loong.entity;
+package com.loong.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+import lombok.*;
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Setmeal implements Serializable {
-
+public class SetmealPageQueryVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -30,11 +25,8 @@ public class Setmeal implements Serializable {
 
     private String image;
 
-    private LocalDateTime createTime;
+    private String categoryName;
 
     private LocalDateTime updateTime;
 
-    private Long createUser;
-
-    private Long updateUser;
 }

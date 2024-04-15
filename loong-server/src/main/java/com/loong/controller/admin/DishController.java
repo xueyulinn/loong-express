@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.loong.dto.DishDTO;
 import com.loong.dto.DishPageQueryDTO;
+import com.loong.entity.Dish;
 import com.loong.result.PageResult;
 import com.loong.result.Result;
 import com.loong.service.DishService;
@@ -25,6 +26,12 @@ import com.loong.vo.DishVO;
 public class DishController {
     @Autowired
     private DishService dishService;
+
+    @GetMapping("/list")
+    public Result<List> queryByCategoryId(Long categoryId) {
+        List <Dish> dishes = dishService.queryByCategoryId(categoryId);
+        return Result.success(dishes);
+    }
 
     @PutMapping
     public Result<String> editDish(@RequestBody DishDTO dishDTO) {
@@ -63,7 +70,6 @@ public class DishController {
         dishService.deleteDish(ids);
         return Result.success();
     }
-
 
     @PostMapping("/status/{status}")
     public Result<String> modifyStatus(@PathVariable Integer status, Integer id) {

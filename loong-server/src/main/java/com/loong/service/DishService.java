@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.loong.dto.DishDTO;
 import com.loong.dto.DishPageQueryDTO;
+import com.loong.entity.Dish;
 import com.loong.result.PageResult;
 import com.loong.vo.DishVO;
 
@@ -20,6 +21,8 @@ public interface DishService {
     void editDish(DishDTO dishDTO);
 
     void modifyStatus(Integer status, Integer id);
+
+    List <Dish> queryByCategoryId(Long categoryId);
 
     
 } 

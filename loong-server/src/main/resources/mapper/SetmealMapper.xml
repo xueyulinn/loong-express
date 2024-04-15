@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loong.mapper.SetmealMapper">
+        <!-- pageQuery -->
+        <select id="pageQuery" resultType="Setmeal">
+        select * from setmeal
+                <where>
+                        <if test="name != null and name != ''">
+                    name like concat('%',#{name},'%')
+            </if>
+                        <if test = "categoryId != null">
+                    and category_id = #{categoryId}
+            </if>
+                        <if test = "status != null">
+                    and status = #{status}
+            </if>
+                </where>
+        </select>
+        <!-- insert -->
+        <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+                insert into setmeal 
+                (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)
+                 values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+        </insert>
+        <!-- update -->
+        <update id="update">
+        update setmeal
+                <set>
+                        <if test="categoryId != null">
+                    category_id = #{categoryId}
+                </if>
+                        <if test="name != null and name !='' " >
+                        and name = #{name}
+                </if>
+                        <if test="price != null">
+                    and price = #{price}
+                </if>
+                        <if test="description != null and description !='' " >
+                        and description = #{description}
+                </if>
+                        <if test="image != null and image !='' " >
+                        and image = #{image}
+                </if>
+                        <if test="updateTime != null">
+                        and update_time = #{updateTime}
+                </if>
+                        <if test="updateUser != null and updateUser !='' " >
+                        and update_user = #{updateUser}
+                </if>
+                </set>
+        </update>
+</mapper>

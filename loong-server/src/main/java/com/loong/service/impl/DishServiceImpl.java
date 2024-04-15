@@ -151,4 +151,17 @@ public class DishServiceImpl implements DishService {
         dishMapper.updateStatus(status, id);
     }
 
+    @Override
+    public List <Dish> queryByCategoryId(Long categoryId) {
+        List<Dish> allDishes =  dishMapper.selectByCategoryId(categoryId);
+        List<Dish> onSaleDishes = new ArrayList<>();
+        // ensure only on sale dishes are returned
+        allDishes.forEach(dish -> {
+            if (dish.getStatus() == StatusConstant.ENABLE) {
+                onSaleDishes.add(dish);
+            }
+        });
+        return onSaleDishes;
+    }
+
 }
