@@ -20,6 +20,6 @@ public interface SetmealService {
 
     void updateStatus(Integer status, Long id);
 
-    
-} 
-    
+    List<SetmealVO> listWithFlavor(Integer categoryId);
+
+}

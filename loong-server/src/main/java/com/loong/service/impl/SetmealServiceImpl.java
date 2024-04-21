@@ -110,4 +110,16 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.updateStatus(status, id);
     }
 
+    @Override
+    public List<SetmealVO> listWithFlavor(Integer categoryId) {
+        List<Setmeal> setmeals = setmealMapper.selectByCategoryId(categoryId);
+        List<SetmealVO> vos = new ArrayList<>();
+        for (Setmeal setmeal : setmeals) {
+            SetmealVO vo = new SetmealVO();
+            BeanUtils.copyProperties(setmeal, vo);
+            vos.add(vo);
+        }
+        return vos;
+    }
+
 }

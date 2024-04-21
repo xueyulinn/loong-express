@@ -3,6 +3,7 @@ package com.loong.controller.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,18 +27,21 @@ public class SetmealController {
     private SetmealService setmealService;
 
 
+    @CacheEvict(value = "setmeal", allEntries = true)
     @PostMapping("/status/{status}")
     public Result modifyStatus(@PathVariable Integer status, Long id) {
         setmealService.updateStatus(status, id);
         return Result.success();
     }
 
+    @CacheEvict(value = "setmeal", allEntries = true)
     @DeleteMapping
     public Result deleteById(@RequestParam List<Long> ids) {
         setmealService.deleteById(ids);
         return Result.success();
     }
 
+    @CacheEvict(value = "setmeal", key = "#setmealDTO.categoryId")
     @PutMapping
     public Result<SetmealVO> editSetmeal(@RequestBody SetmealDTO setmealDTO) {
         setmealService.editSetmeal(setmealDTO);
@@ -50,6 +54,7 @@ public class SetmealController {
         return Result.success(setmealVO);
     }
 
+    @CacheEvict(value = "setmeal", key = "#setmealDTO.categoryId")
     @PostMapping
     public Result<String> addSetmeal(@RequestBody SetmealDTO setmealDTO) {
         setmealService.addSetmeal(setmealDTO);

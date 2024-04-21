@@ -152,8 +152,8 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public List <Dish> queryByCategoryId(Long categoryId) {
-        List<Dish> allDishes =  dishMapper.selectByCategoryId(categoryId);
+    public List<Dish> queryByCategoryId(Long categoryId) {
+        List<Dish> allDishes = dishMapper.selectByCategoryId(categoryId);
         List<Dish> onSaleDishes = new ArrayList<>();
         // ensure only on sale dishes are returned
         allDishes.forEach(dish -> {
@@ -162,6 +162,21 @@ public class DishServiceImpl implements DishService {
             }
         });
         return onSaleDishes;
+    }
+
+    @Override
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<Dish> dishes = dishMapper.selectByCondition(dish);
+        List<DishVO> dishVOS = new ArrayList<>();
+        for (Dish d : dishes) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d, dishVO);
+            List<DishFlavor> flavors = dishFlavorMapper.selectByDishId(d.getId().intValue());
+            dishVO.setFlavors(flavors);
+            dishVOS.add(dishVO);
+        }
+        return dishVOS;
+
     }
 
 }

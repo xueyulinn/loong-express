@@ -22,10 +22,8 @@ public interface DishService {
 
     void modifyStatus(Integer status, Integer id);
 
-    List <Dish> queryByCategoryId(Long categoryId);
+    List<Dish> queryByCategoryId(Long categoryId);
 
-    
-} 
+    List<DishVO> listWithFlavor(Dish dish);
 
-
-    
+}

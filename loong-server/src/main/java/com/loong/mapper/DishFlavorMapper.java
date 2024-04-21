@@ -21,8 +21,6 @@ public interface DishFlavorMapper {
     @Select("select * from dish_flavor where dish_id = #{id}")
     List<DishFlavor> selectByDishId(Integer id);
 
-    
     void updateFlavors(DishFlavor dishFlavor);
-
 
 }

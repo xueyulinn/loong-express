@@ -1,5 +1,7 @@
 package com.loong.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -42,6 +44,9 @@ public interface SetmealMapper {
     @AutoFill(OperationType.UPDATE)
     @Update("update setmeal set status = #{status} where id = #{id}")
     void updateStatus(Integer status, Long id);
+
+    @Select("select * from setmeal where category_id = #{categoryId}")
+    List<Setmeal> selectByCategoryId(Integer categoryId);
 
    
 

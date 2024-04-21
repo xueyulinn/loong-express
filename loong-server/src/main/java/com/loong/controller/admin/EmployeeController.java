@@ -124,7 +124,7 @@ public class EmployeeController {
      */
     @PostMapping("/login")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
-        log.info("employee login：{}", employeeLoginDTO);
+        log.info("employee login: {}", employeeLoginDTO);
 
         Employee employee = employeeService.login(employeeLoginDTO);
 

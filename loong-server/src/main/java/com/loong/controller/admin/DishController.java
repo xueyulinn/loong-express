@@ -3,6 +3,7 @@ package com.loong.controller.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,15 +28,21 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @GetMapping("/list")
     public Result<List> queryByCategoryId(Long categoryId) {
-        List <Dish> dishes = dishService.queryByCategoryId(categoryId);
+        List<Dish> dishes = dishService.queryByCategoryId(categoryId);
         return Result.success(dishes);
     }
 
     @PutMapping
     public Result<String> editDish(@RequestBody DishDTO dishDTO) {
+
         dishService.editDish(dishDTO);
+
+        cleanCache(dishDTO.getCategoryId());
         return Result.success();
     }
 
@@ -48,6 +55,7 @@ public class DishController {
     @PostMapping
     public Result<String> addDish(@RequestBody DishDTO dishDTO) {
         dishService.addDish(dishDTO);
+        cleanCache(dishDTO.getCategoryId());
         return Result.success();
     }
 
@@ -68,12 +76,22 @@ public class DishController {
     @DeleteMapping
     public Result<String> deleteDish(@RequestParam List<Integer> ids) {
         dishService.deleteDish(ids);
+        cleanCache(null);
         return Result.success();
     }
 
     @PostMapping("/status/{status}")
     public Result<String> modifyStatus(@PathVariable Integer status, Integer id) {
         dishService.modifyStatus(status, id);
+        cleanCache(dishService.queryById(id).getCategoryId());
         return Result.success();
+    }
+
+    public void cleanCache(Long categoryId) {
+        if (categoryId == null) {
+            redisTemplate.delete("dish_*");
+            return;
+        }
+        redisTemplate.delete("dish_" + categoryId);
     }
 }

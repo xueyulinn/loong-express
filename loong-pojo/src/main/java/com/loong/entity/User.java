@@ -1,13 +1,12 @@
 package com.loong.entity;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -39,4 +38,5 @@ public class User implements Serializable {
 
     //注册时间
     private LocalDateTime createTime;
+
 }
