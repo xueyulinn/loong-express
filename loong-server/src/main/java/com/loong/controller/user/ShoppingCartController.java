@@ -3,6 +3,7 @@ package com.loong.controller.user;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +32,17 @@ public class ShoppingCartController {
     public Result<List<ShoppingCart>> list() {
         List<ShoppingCart> list =  shoppingCartService.list();
         return Result.success(list);
+    }
+
+    @PostMapping("/sub")
+    public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+        shoppingCartService.subtract(shoppingCartDTO);
+        return Result.success();
+    }
+
+    @DeleteMapping("/clean")
+    public Result clean() {
+        shoppingCartService.clean();
+        return Result.success();
     }
 }

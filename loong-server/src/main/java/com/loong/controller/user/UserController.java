@@ -18,6 +18,9 @@ import com.loong.service.UserService;
 import com.loong.utils.JwtUtil;
 import com.loong.vo.UserLoginVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/user/user")
 public class UserController {
@@ -38,6 +41,7 @@ public class UserController {
                 jwtProperties.getUserTtl(),
                 claims);
 
+        log.info("UserID:{}, GeneratedToken:{}", user.getId(), token);
         UserLoginVO userLoginVO = new UserLoginVO();
         userLoginVO.setToken(token);
         userLoginVO.setOpenid(user.getOpenid());
