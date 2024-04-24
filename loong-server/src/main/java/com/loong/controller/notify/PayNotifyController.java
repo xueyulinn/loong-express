@@ -3,7 +3,6 @@ package com.loong.controller.notify;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.loong.annotation.IgnoreToken;
 import com.loong.properties.WeChatProperties;
 import com.loong.service.OrderService;
 import com.wechat.pay.contrib.apache.httpclient.util.AesUtil;
@@ -31,11 +30,11 @@ public class PayNotifyController {
     private WeChatProperties weChatProperties;
 
     /**
-     * 支付成功回调
+     * wechat pay success notify
      *
      * @param request
      */
-    // @IgnoreToken
+    // @IgnoreTosken
     @RequestMapping("/paySuccess")
     public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //读取数据

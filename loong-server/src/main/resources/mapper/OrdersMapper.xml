@@ -41,4 +41,15 @@
         </set>
         where id = #{id}
     </update>
+    <!-- selectLimit -->
+    <select id="selectLimit" resultType = "Orders">
+    select * from orders
+        <where>
+    user_id = #{userId}
+            <if test="status != null">
+    and status = #{status}  
+    </if>
+        </where>
+        order by order_time desc
+    </select>
 </mapper>

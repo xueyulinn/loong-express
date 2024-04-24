@@ -2,6 +2,7 @@ package com.loong.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.loong.constant.MessageConstant;
 import com.loong.context.BaseContext;
-import com.loong.dto.OrdersDTO;
+import com.loong.dto.OrdersPageQueryDTO;
 import com.loong.dto.OrdersPaymentDTO;
 import com.loong.dto.OrdersSubmitDTO;
 import com.loong.entity.AddressBook;
@@ -27,10 +30,12 @@ import com.loong.mapper.OrderDetailsMapper;
 import com.loong.mapper.OrdersMapper;
 import com.loong.mapper.ShoppingCartMapper;
 import com.loong.mapper.UserMapper;
+import com.loong.result.PageResult;
 import com.loong.service.OrderService;
 import com.loong.utils.WeChatPayUtil;
 import com.loong.vo.OrderPaymentVO;
 import com.loong.vo.OrderSubmitVO;
+import com.loong.vo.OrderVO;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -46,7 +51,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private AddressBookMapper addressBookMapper;
-
 
     @Autowired
     private UserMapper userMapper;
@@ -106,26 +110,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 订单支付
+     * order payment
      *
      * @param ordersPaymentDTO
      * @return
      */
     public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-        // 当前登录用户id
-        Long userId = BaseContext.getCurrentId();
-        User user = userMapper.selectByUserId(userId);
 
-        // 调用微信支付接口，生成预支付交易单
+        User user = userMapper.selectByUserId(BaseContext.getCurrentId());
+
+        // call wechat pay api
         JSONObject jsonObject = weChatPayUtil.pay(
-                ordersPaymentDTO.getOrderNumber(), // 商户订单号
-                new BigDecimal(0.01), // 支付金额，单位 元
-                "Loong Express Order", // 商品描述
-                user.getOpenid() // 微信用户的openid
-        );
+                ordersPaymentDTO.getOrderNumber(),
+                new BigDecimal(0.01), // unit: yuan
+                "Loong Express Order",
+                user.getOpenid());
 
         if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-            throw new OrderBusinessException("该订单已支付");
+            throw new OrderBusinessException("Order has been paid");
         }
 
         OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
@@ -155,6 +157,55 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         ordersMapper.update(orders);
+    }
+
+    @Override
+    public PageResult queryhistoryOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Page<Orders> orders = ordersMapper.selectLimit(ordersPageQueryDTO);
+        List<OrderVO> orderVOs = new ArrayList<>();
+
+        for (Orders order : orders) {
+            OrderVO orderVO = new OrderVO();
+            List<OrderDetail> orderDetails = orderDetailsMapper.selectByOrderId(order.getId());
+            orderVO.setOrderDetailList(orderDetails);
+            BeanUtils.copyProperties(order, orderVO);
+            orderVOs.add(orderVO);
+        }
+
+        return new PageResult(orders.getTotal(), orderVOs);
+    }
+
+    @Override
+    public OrderVO queryOrderDetail(Long id) {
+        Orders order = ordersMapper.selectById(id);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(order, orderVO);
+
+        List<OrderDetail> orderDetails = orderDetailsMapper.selectByOrderId(id);
+        orderVO.setOrderDetailList(orderDetails);
+        return orderVO;
+    }
+
+    @Override
+    public void cancelOrder(Long id) {
+        Orders order = new Orders();
+        order.setId(id);
+        order.setStatus(Orders.CANCELLED);
+        ordersMapper.update(order);
+    }
+
+    @Override
+    public void orderAgain(Long id) {
+        List<OrderDetail> orderDetails = orderDetailsMapper.selectByOrderId(id);
+        for (OrderDetail orderDetail : orderDetails) {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            shoppingCartMapper.insert(shoppingCart);
+        }
     }
 
 }
