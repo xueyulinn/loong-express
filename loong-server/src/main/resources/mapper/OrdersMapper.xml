@@ -48,4 +48,13 @@
     <select id="selectTop10ByDate" resultType="OrderDetail"> select od.name name, sum(od.number) number from order_detail od
         join orders o on od.order_id = o.id and o.status = 5 and date(o.order_time) between #{begin} and #{end} group by od.name order by
         sum(od.number) desc limit 10; </select>
-</mapper>
+
+    <!-- countByStatus --> 
+
+    <select id="countByStatus" resultType="Integer">
+        select count(*) from orders <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
+    </select></mapper>

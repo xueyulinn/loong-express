@@ -26,7 +26,6 @@ public interface OrdersMapper {
     @Select("select * from orders where id = #{id}")
     Orders selectById(Long id);
 
-    @Select("select count(*) from orders where status = #{status}")
     Integer countByStatus(Integer status);
 
     @Select("select * from orders where id = #{id} and order_time < #{time}")
@@ -38,12 +37,15 @@ public interface OrdersMapper {
     @Select("SELECT * FROM orders WHERE DATE(order_time) BETWEEN #{begin} AND #{end}")
     List<Orders> selectByDate(String begin, String end);
 
-    @Select("SELECT count(*) FROM orders WHERE status = #{completed} AND DATE(order_time) = #{date}")
-    int selectByStatusAndDate(Integer completed, String date);
+    @Select("SELECT count(*) FROM orders WHERE status = #{status} AND DATE(order_time) = #{date}")
+    int selectByStatusAndDate(Integer status, String date);
 
     @Select("SELECT count(*) FROM orders WHERE DATE(order_time) = #{string}")
     int countByDate(String string);
 
     List<OrderDetail> selectTop10ByDate(String begin, String end);
+
+    @Select("select sum(amount) from orders where status = #{status} and date(order_time) = #{today}")
+    Double sumByStatusAndDate(Integer status, String today);
 
 }

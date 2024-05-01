@@ -46,4 +46,7 @@ public interface DishMapper {
     @Select("select * from dish where status = #{status} and category_id = #{categoryId}")
     List<Dish> selectByCondition(Dish dish);
 
+    @Select("select count(*) from dish where status = #{status}")
+    Integer countByStatus(int status);
+
 }
