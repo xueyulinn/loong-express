@@ -16,4 +16,5 @@ public class OSSConfiguration {
         return new AliOssUtil(aliOssProperties.getEndpoint(), aliOssProperties.getAccessKeyId(),
                 aliOssProperties.getAccessKeySecret(), aliOssProperties.getBucketName());
     }
+
 }

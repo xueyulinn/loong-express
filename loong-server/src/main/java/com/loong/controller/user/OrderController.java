@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.loong.controller.notify.PayNotifyController;
 import com.loong.dto.OrdersPageQueryDTO;
 import com.loong.dto.OrdersPaymentDTO;
 import com.loong.dto.OrdersSubmitDTO;
@@ -29,6 +30,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PayNotifyController payNotifyController;
 
     @PostMapping("/repetition/{id}")
     public Result orderAgain(@PathVariable Long id) {

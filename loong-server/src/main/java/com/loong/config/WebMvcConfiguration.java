@@ -17,7 +17,7 @@ import com.loong.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 配置类，注册web层相关组件
+ * configure for web 
  */
 @Configuration
 @Slf4j
@@ -59,8 +59,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     /**
      * custom message converter
      * HTTP message converters are responsible for converting the request body into
-     * Java objects
-     * and Java objects into the HTTP response body.
+     * Java objects and Java objects into the HTTP response body.
      * 
      * @param converters
      */

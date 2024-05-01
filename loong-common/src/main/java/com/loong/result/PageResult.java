@@ -17,8 +17,10 @@ import java.util.List;
 @Builder
 public class PageResult implements Serializable {
 
-    private long total; //总记录数
+    // total number of records
+    private long total; 
 
-    private List records; //当前页数据集合
+    // records of the current page
+    private List records; 
 
 }

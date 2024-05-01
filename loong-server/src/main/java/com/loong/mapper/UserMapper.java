@@ -16,6 +16,12 @@ public interface UserMapper {
     @Select("select * from user where id = #{userId}")
     User selectByUserId(Long userId);
 
+    @Select("select count(*) from user where date(create_time) = #{date}")
+    Integer selectByCreateDate(String date);
+
+    @Select("select count(*) from user where date(create_time) <= #{date}")
+    Integer selectBeforeDate(String date);
+
     
 }
     

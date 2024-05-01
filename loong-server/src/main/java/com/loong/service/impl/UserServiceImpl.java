@@ -1,5 +1,6 @@
 package com.loong.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
             user.setOpenid(openID);
             userMapper.insert(user);
         }
-
+        user.setCreateTime(LocalDateTime.now());
         return user;
     }
 
