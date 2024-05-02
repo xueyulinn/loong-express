@@ -1,7 +1,7 @@
 package com.loong.exception;
 
 /**
- * 登录失败
+ * Login failed exception
  */
 public class LoginFailedException extends BaseException{
     public LoginFailedException(String msg){

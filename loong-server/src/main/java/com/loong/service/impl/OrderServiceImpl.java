@@ -129,25 +129,25 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
 
-        User user = userMapper.selectByUserId(BaseContext.getCurrentId());
+        // User user = userMapper.selectByUserId(BaseContext.getCurrentId());
 
-        // call wechat pay api
-        JSONObject jsonObject = weChatPayUtil.pay(
-                ordersPaymentDTO.getOrderNumber(),
-                new BigDecimal(0.01), // unit: yuan
-                "Loong Express Order",
-                user.getOpenid());
+        // // call wechat pay api
+        // JSONObject jsonObject = weChatPayUtil.pay(
+        //         ordersPaymentDTO.getOrderNumber(),
+        //         new BigDecimal(0.01), // unit: yuan
+        //         "Loong Express Order",
+        //         user.getOpenid());
 
-        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-            throw new OrderBusinessException("Order has been paid");
-        }
+        // if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
+        //     throw new OrderBusinessException("Order has been paid");
+        // }
 
-        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
-        vo.setPackageStr(jsonObject.getString("package"));
+        // OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
+        // vo.setPackageStr(jsonObject.getString("package"));
         
         // here directly calls paySuccess for test purpose
         paySuccess(ordersPaymentDTO.getOrderNumber());
-
+        OrderPaymentVO vo = new OrderPaymentVO();
         return vo;
     }
 
@@ -156,11 +156,11 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param outTradeNo
      */
-    public void paySuccess(String outTradeNo) {
+    public void paySuccess(String orderNumber) {
         Long userId = BaseContext.getCurrentId();
 
         // 根据订单号查询当前用户的订单
-        Orders ordersDB = ordersMapper.getByNumberAndUserId(outTradeNo, userId);
+        Orders ordersDB = ordersMapper.selectByNumberAndUserId(orderNumber, userId);
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
         Map map = new HashMap();
         map.put("type", 1);// 1 represents new order comes
         map.put("orderId", orders.getId());
-        map.put("content", "OrderNumber: " + outTradeNo);
+        map.put("content", "OrderNumber: " + orderNumber);
 
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
     }
@@ -321,8 +321,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void rejectOrder(OrdersRejectionDTO ordersRejectionDTO) {
-        // TODO
-        updateStatus(ordersRejectionDTO.getId(), Orders.CANCELLED);
+        Orders order = new Orders();
+        order.setId(ordersRejectionDTO.getId());
+        order.setStatus(Orders.CANCELLED);
+        order.setCancelTime(LocalDateTime.now());
+        ordersMapper.update(order);
     }
 
     @Override

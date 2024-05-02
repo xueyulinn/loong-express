@@ -40,7 +40,10 @@ public interface EmployeeMapper {
     void update(Employee employee);
 
     @AutoFill(OperationType.UPDATE)
-    @Update("update employee set password = #{newPassword}, update_time = #{updateTime}, update_user = #{updateUser}   where id = #{empId}")
+    @Update("update employee set password = #{password}, update_time = #{updateTime}, update_user = #{updateUser}   where id = #{id}")
     void updatePassword(Employee employee);
+
+    @Select("select password from employee where id = #{id}")
+    String selectPasswordById(Long id);
 
 }

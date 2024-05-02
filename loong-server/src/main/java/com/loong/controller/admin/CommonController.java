@@ -34,6 +34,7 @@ public class CommonController {
             String storageFileName = UUID.randomUUID().toString() + fileExention;
 
             String uploadPath = aliOssUtil.upload(file.getBytes(), storageFileName);
+            
             return Result.success(uploadPath);
         } catch (IOException e) {
             log.info("upload file failed");

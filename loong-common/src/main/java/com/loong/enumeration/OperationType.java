@@ -1,7 +1,7 @@
 package com.loong.enumeration;
 
 /**
- * 数据库操作类型
+ * DML type
  */
 public enum OperationType {
 

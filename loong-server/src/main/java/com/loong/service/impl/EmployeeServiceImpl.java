@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.loong.constant.MessageConstant;
 import com.loong.constant.PasswordConstant;
 import com.loong.constant.StatusConstant;
+import com.loong.context.BaseContext;
 import com.loong.dto.EmployeeDTO;
 import com.loong.dto.EmployeeLoginDTO;
 import com.loong.dto.EmployeePageQuery;
@@ -18,6 +20,7 @@ import com.loong.dto.EmployeePasswordDTO;
 import com.loong.entity.Employee;
 import com.loong.exception.AccountLockedException;
 import com.loong.exception.AccountNotFoundException;
+import com.loong.exception.PasswordEditFailedException;
 import com.loong.exception.PasswordErrorException;
 import com.loong.mapper.EmployeeMapper;
 import com.loong.result.PageResult;
@@ -48,7 +51,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
 
-        // TODO 后期需要进行md5加密，然后再进行比对
+        //
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             // wrong password
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -70,9 +74,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         BeanUtils.copyProperties(employeeDTO, employee);
 
-        employee.setPassword(PasswordConstant.DEFAULT_PASSWORD);
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
 
         employee.setStatus(StatusConstant.ENABLE);
+
         employeeMapper.insert(employee);
 
     }
@@ -123,7 +128,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void editPassword(EmployeePasswordDTO employeePasswordDTO) {
         Employee employee = new Employee();
-        BeanUtils.copyProperties(employeePasswordDTO, employee);
+        employee.setId(BaseContext.getCurrentId());
+        String oldPassword = DigestUtils.md5DigestAsHex(employeePasswordDTO.getOldPassword().getBytes());
+        String password = employeeMapper.selectPasswordById(employee.getId());
+
+        if (!password.equals(oldPassword)) {
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
+        }
+
+        employee.setPassword(employeePasswordDTO.getNewPassword());
 
         employeeMapper.updatePassword(employee);
     }

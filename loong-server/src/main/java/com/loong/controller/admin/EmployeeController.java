@@ -95,7 +95,7 @@ public class EmployeeController {
     @GetMapping("/page")
     public Result<PageResult> queryByPage(EmployeePageQuery pageQuery) {
 
-        log.info("query employee by page：{}", pageQuery);
+        log.info("query employee by page: {}", pageQuery);
 
         PageResult pageResult = employeeService.queryByPage(pageQuery);
 

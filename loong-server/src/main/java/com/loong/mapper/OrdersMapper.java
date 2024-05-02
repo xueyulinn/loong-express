@@ -16,8 +16,8 @@ public interface OrdersMapper {
 
     void insert(Orders orders);
 
-    @Select("select * from orders where number = #{outTradeNo} and user_id = #{userId}")
-    Orders getByNumberAndUserId(String outTradeNo, Long userId);
+    @Select("select * from orders where number = #{orderNumber} and user_id = #{userId}")
+    Orders selectByNumberAndUserId(String orderNumber, Long userId);
 
     void update(Orders orders);
 
@@ -45,7 +45,7 @@ public interface OrdersMapper {
 
     List<OrderDetail> selectTop10ByDate(String begin, String end);
 
-    @Select("select sum(amount) from orders where status = #{status} and date(order_time) = #{today}")
+    @Select("select if (sum(amount) is null, 0, sum(amount)) amount from orders where status = #{status} and date(order_time) = #{today}")
     Double sumByStatusAndDate(Integer status, String today);
 
 }
