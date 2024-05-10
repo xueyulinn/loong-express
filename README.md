@@ -12,7 +12,6 @@ admin interfaces:
 
 ![1715340037199](image/README/1715340037199.png)
 
-
 mini-app:
 
 ![1715340042288](image/README/1715340042288.png)
