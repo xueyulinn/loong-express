@@ -1,6 +1,7 @@
 package com.loong.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import com.loong.entity.Orders;
 import com.loong.entity.ShoppingCart;
 import com.loong.entity.User;
 import com.loong.exception.AddressBookBusinessException;
+import com.loong.exception.BaseException;
 import com.loong.exception.OrderBusinessException;
 import com.loong.exception.ShoppingCartBusinessException;
 import com.loong.mapper.AddressBookMapper;
@@ -37,8 +39,10 @@ import com.loong.mapper.OrderDetailsMapper;
 import com.loong.mapper.OrdersMapper;
 import com.loong.mapper.ShoppingCartMapper;
 import com.loong.mapper.UserMapper;
+import com.loong.properties.ShopAddressProperties;
 import com.loong.result.PageResult;
 import com.loong.service.OrderService;
+import com.loong.utils.BaiduMapUtil;
 import com.loong.utils.WeChatPayUtil;
 import com.loong.vo.OrderPaymentVO;
 import com.loong.vo.OrderStatisticsVO;
@@ -70,6 +74,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private WebSocketServer webSocketServer;
 
+    @Autowired
+    private ShopAddressProperties shopAddressProperties;
+
     @Override
     public OrderSubmitVO orderSubmit(OrdersSubmitDTO ordersSubmitDTO) {
 
@@ -85,13 +92,45 @@ public class OrderServiceImpl implements OrderService {
         Orders order = new Orders();
         BeanUtils.copyProperties(ordersSubmitDTO, order);
         order.setPhone(addressBook.getPhone());
-        order.setAddress(addressBook.getDetail());
+        order.setAddress(addressBook.getProvinceName() + addressBook.getCityName() + addressBook.getDistrictName()
+                + addressBook.getDetail());
         order.setConsignee(addressBook.getConsignee());
         order.setNumber(String.valueOf(System.currentTimeMillis()));
         order.setUserId(userId);
         order.setStatus(Orders.PENDING_PAYMENT);
         order.setPayStatus(Orders.UN_PAID);
         order.setOrderTime(LocalDateTime.now());
+
+        // filter the order where the distance over 5km
+        // get user and shop coordinate
+        Map userCoordinate = BaiduMapUtil.getCoordinate(order.getAddress(), shopAddressProperties.getAk());
+        Map shopCoordinate = BaiduMapUtil.getCoordinate(shopAddressProperties.getAddress(),
+                shopAddressProperties.getAk());
+
+        // get route
+        BigDecimal userLat = (BigDecimal) userCoordinate.get("lat");
+        double doubleuserLat = userLat.setScale(6, RoundingMode.HALF_UP).doubleValue();
+
+        BigDecimal userLng = (BigDecimal) userCoordinate.get("lng");
+        double doubleuserLng = userLng.setScale(6, RoundingMode.HALF_UP).doubleValue();
+
+        String origin = doubleuserLat + "," + doubleuserLng;
+
+        BigDecimal shopLat = (BigDecimal) shopCoordinate.get("lat");
+        double doubleshopLat = shopLat.setScale(6, RoundingMode.HALF_UP).doubleValue();
+
+        BigDecimal shopLng = (BigDecimal) shopCoordinate.get("lng");
+        double doubleshopLng = shopLng.setScale(6, RoundingMode.HALF_UP).doubleValue();
+
+        String destination = doubleshopLat + "," + doubleshopLng;
+
+        Map route = BaiduMapUtil.getRoute(shopAddressProperties.getAk(), origin, destination);
+
+        Integer distance = (Integer) route.get("distance");
+
+        if (distance > 5000){
+            throw new BaseException("Can not deliver due to long distance");
+        }
 
         ordersMapper.insert(order);
 
@@ -133,18 +172,19 @@ public class OrderServiceImpl implements OrderService {
 
         // // call wechat pay api
         // JSONObject jsonObject = weChatPayUtil.pay(
-        //         ordersPaymentDTO.getOrderNumber(),
-        //         new BigDecimal(0.01), // unit: yuan
-        //         "Loong Express Order",
-        //         user.getOpenid());
+        // ordersPaymentDTO.getOrderNumber(),
+        // new BigDecimal(0.01), // unit: yuan
+        // "Loong Express Order",
+        // user.getOpenid());
 
-        // if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-        //     throw new OrderBusinessException("Order has been paid");
+        // if (jsonObject.getString("code") != null &&
+        // jsonObject.getString("code").equals("ORDERPAID")) {
+        // throw new OrderBusinessException("Order has been paid");
         // }
 
         // OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
         // vo.setPackageStr(jsonObject.getString("package"));
-        
+
         // here directly calls paySuccess for test purpose
         paySuccess(ordersPaymentDTO.getOrderNumber());
         OrderPaymentVO vo = new OrderPaymentVO();
