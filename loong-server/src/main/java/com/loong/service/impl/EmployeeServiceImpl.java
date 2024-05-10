@@ -51,7 +51,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
 
-        //
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             // wrong password

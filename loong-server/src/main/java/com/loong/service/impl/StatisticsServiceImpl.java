@@ -3,6 +3,7 @@ package com.loong.service.impl;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.loong.vo.TurnoverReportVO;
 import com.loong.vo.UserReportVO;
 
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
@@ -29,107 +31,75 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public TurnoverReportVO turnoverStatistics(String begin, String end) {
-
-        // create datelist (x-axis)
-        LocalDate beginDate = LocalDate.parse(begin);
+        // Parse input dates
+        LocalDate startDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        List<LocalDate> dateList = new ArrayList<>();
-        while (beginDate.isBefore(endDate)) {
-            dateList.add(beginDate);
-            beginDate = beginDate.plusDays(1);
-        }
-        dateList.add(endDate);
 
-        StringBuilder dateString = new StringBuilder();
-        for (LocalDate date : dateList) {
-            dateString.append(date.toString()).append(",");
-        }
-        dateString.deleteCharAt(dateString.lastIndexOf(","));
-        // get values (y-axis)
-        List<Double> salesList = new ArrayList<>();
-        for (LocalDate date : dateList) {
-            Double sales = ordersMapper.selectSumByDate(date.toString());
-            if (sales == null) {
-                sales = 0.0;
-            }
-            salesList.add(sales);
-        }
+        // Create date list (x-axis) using streams
+        List<LocalDate> dateList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
 
-        StringBuilder salesString = new StringBuilder();
-        for (Double sales : salesList) {
-            salesString.append(sales).append(",");
-        }
-        salesString.deleteCharAt(salesString.lastIndexOf(","));
+        // Get values (y-axis) using streams and map operation
+        List<Double> salesList = dateList.stream()
+                .map(date -> ordersMapper.selectSumByDate(date.toString()))
+                .map(sales -> sales == null ? 0.0 : sales)
+                .collect(Collectors.toList());
 
-        // return
+        // Convert lists to comma-separated strings
+        String dateListString = dateList.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.joining(","));
+
+        String salesListString = salesList.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+
+        // Create and return TurnoverReportVO
         TurnoverReportVO turnoverReportVO = new TurnoverReportVO();
-        turnoverReportVO.setDateList(dateString.toString());
-        turnoverReportVO.setTurnoverList(salesString.toString());
+        turnoverReportVO.setDateList(dateListString);
+        turnoverReportVO.setTurnoverList(salesListString);
         return turnoverReportVO;
     }
 
     @Override
     public UserReportVO userStatistics(String begin, String end) {
-        LocalDate beginDate = LocalDate.parse(begin);
+        LocalDate startDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        List<LocalDate> dateList = new ArrayList<>();
-        while (beginDate.isBefore(endDate)) {
-            dateList.add(beginDate);
-            beginDate = beginDate.plusDays(1);
-        }
-        dateList.add(endDate);
+        // Create date list (x-axis) using streams
+        List<LocalDate> dateList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
 
-        List<Integer> newUsers = new ArrayList<>();
-        List<Integer> totalUsers = new ArrayList<>();
+        // Get values (y-axis) using streams and map operation
 
-        for (LocalDate date : dateList) {
-            int newUser = userMapper.selectByCreateDate(date.toString());
-            newUsers.add(newUser);
-            int totalUser = userMapper.selectBeforeDate(date.toString());
-            totalUsers.add(totalUser);
-        }
+        List<Integer> newUserList = dateList.stream().map(date -> userMapper.selectByCreateDate(date.toString()))
+                .map(newUser -> newUser == null ? 0 : newUser).collect(Collectors.toList());
 
-        // construct vo attribute
-        StringBuilder dateString = new StringBuilder();
-        for (LocalDate date : dateList) {
-            dateString.append(date.toString()).append(",");
-        }
-        dateString.deleteCharAt(dateString.lastIndexOf(","));
+        List<Integer> totalUserList = dateList.stream().map(date -> userMapper.selectBeforeDate(date.toString()))
+                .map(totalUser -> totalUser == null ? 0 : totalUser).collect(Collectors.toList());
 
-        StringBuilder newUserString = new StringBuilder();
-        for (Integer newUser : newUsers) {
-            newUserString.append(newUser).append(",");
-        }
-        newUserString.deleteCharAt(newUserString.lastIndexOf(","));
+        String dateListString = dateList.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.joining(","));
 
-        StringBuilder totalUserString = new StringBuilder();
-        for (Integer totalUser : totalUsers) {
-            totalUserString.append(totalUser).append(",");
-        }
-        totalUserString.deleteCharAt(totalUserString.lastIndexOf(","));
+        String newUserString = newUserList.stream()
+                .map(t -> t.toString())
+                .collect(Collectors.joining(","));
+
+        String totalUserString = totalUserList.stream()
+                .map(t -> t.toString())
+                .collect(Collectors.joining(","));
 
         UserReportVO userReportVO = new UserReportVO();
-        userReportVO.setDateList(dateString.toString());
-        userReportVO.setNewUserList(newUserString.toString());
-        userReportVO.setTotalUserList(totalUserString.toString());
+        userReportVO.setDateList(dateListString);
+        userReportVO.setNewUserList(newUserString);
+        userReportVO.setTotalUserList(totalUserString);
         return userReportVO;
     }
 
     @Override
     public OrderReportVO ordersStatistics(String begin, String end) {
-        LocalDate beginDate = LocalDate.parse(begin);
+        LocalDate startDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        List<LocalDate> dateList = new ArrayList<>();
-        while (beginDate.isBefore(endDate)) {
-            dateList.add(beginDate);
-            beginDate = beginDate.plusDays(1);
-        }
-        dateList.add(endDate);
-        StringBuilder dateString = new StringBuilder();
-        for (LocalDate date : dateList) {
-            dateString.append(date.toString()).append(",");
-        }
-        dateString.deleteCharAt(dateString.lastIndexOf(","));
+        // Create date list (x-axis) using streams
+        List<LocalDate> dateList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
 
         // count total orders and valid orders
         List<Orders> orders = ordersMapper.selectByDate(begin, end);
@@ -146,8 +116,14 @@ public class StatisticsServiceImpl implements StatisticsService {
         Double orderCompletionRate = (double) validOrder / totalOrders;
 
         // get lists
-        List validOrderCountList = new ArrayList();
-        List totalOrderList = new ArrayList();
+        List<Integer> validOrderCountList = dateList.stream()
+                .map(date -> ordersMapper.selectByStatusAndDate(Orders.COMPLETED, date.toString()))
+                .collect(Collectors.toList());
+
+        List<Integer> totalOrderList = dateList.stream()
+                .map(date -> ordersMapper.countByDate(date.toString()))
+                .collect(Collectors.toList());
+
         for (LocalDate date : dateList) {
             int validOrderCount = ordersMapper.selectByStatusAndDate(Orders.COMPLETED, date.toString());
             validOrderCountList.add(validOrderCount);
@@ -155,24 +131,23 @@ public class StatisticsServiceImpl implements StatisticsService {
             totalOrderList.add(totalOrderCount);
         }
 
-        StringBuilder validOrderString = new StringBuilder();
-        for (Object validOrderCount : validOrderCountList) {
-            validOrderString.append(validOrderCount).append(",");
-        }
-        validOrderString.deleteCharAt(validOrderString.lastIndexOf(","));
-        StringBuilder totalOrderString = new StringBuilder();
-        for (Object totalOrderCount : totalOrderList) {
-            totalOrderString.append(totalOrderCount).append(",");
-        }
-        totalOrderString.deleteCharAt(totalOrderString.lastIndexOf(","));
+        String dateListString = dateList.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.joining(","));
+        String validOrderString = validOrderCountList.stream()
+                .map(t -> t.toString())
+                .collect(Collectors.joining(","));
+        String totalOrderString = totalOrderList.stream()
+                .map(t -> t.toString())
+                .collect(Collectors.joining(","));
 
         OrderReportVO orderReportVO = new OrderReportVO();
-        orderReportVO.setDateList(dateString.toString());
+        orderReportVO.setDateList(dateListString);
         orderReportVO.setTotalOrderCount(totalOrders);
         orderReportVO.setValidOrderCount(validOrder);
         orderReportVO.setOrderCompletionRate(orderCompletionRate);
-        orderReportVO.setValidOrderCountList(validOrderString.toString());
-        orderReportVO.setOrderCountList(totalOrderString.toString());
+        orderReportVO.setValidOrderCountList(validOrderString);
+        orderReportVO.setOrderCountList(totalOrderString);
         return orderReportVO;
     }
 

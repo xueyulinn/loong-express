@@ -31,7 +31,7 @@ public interface OrdersMapper {
     @Select("select * from orders where id = #{id} and order_time < #{time}")
     List<Orders> selectByStatusAndTime(Integer id, LocalDateTime time);
 
-    @Select("SELECT SUM(amount) FROM orders WHERE status = 5 AND DATE(order_time) = #{orderDate} group by order_time")
+    @Select("SELECT SUM(amount) FROM orders WHERE status = 5 AND DATE(order_time) = #{orderDate}")
     Double selectSumByDate(String orderDate);
 
     @Select("SELECT * FROM orders WHERE DATE(order_time) BETWEEN #{begin} AND #{end}")
@@ -40,8 +40,8 @@ public interface OrdersMapper {
     @Select("SELECT count(*) FROM orders WHERE status = #{status} AND DATE(order_time) = #{date}")
     int selectByStatusAndDate(Integer status, String date);
 
-    @Select("SELECT count(*) FROM orders WHERE DATE(order_time) = #{string}")
-    int countByDate(String string);
+    @Select("SELECT count(*) FROM orders WHERE DATE(order_time) = #{date}")
+    int countByDate(String date);
 
     List<OrderDetail> selectTop10ByDate(String begin, String end);
 
