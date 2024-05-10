@@ -8,13 +8,14 @@ This project is a restaurant management system for my aunt who owns loong-expres
 
 admin interfaces:
 
-![1715331448374](image/README/1715331448374.png)
+![1715340029300](image/README/1715340029300.png)
 
-![1715332806915](image/README/1715332806915.png)
+![1715340037199](image/README/1715340037199.png)
+
 
 mini-app:
 
-![1715331592682](image/README/1715331592682.png)
+![1715340042288](image/README/1715340042288.png)
 
 ### Modules Introduction
 
@@ -41,5 +42,3 @@ User
 | Personal Information     | The user's personal information interface provides access to historical orders and address management. Users can view historical order information, use the reorder function, and manage delivery addresses, including setting default addresses, adding, modifying, and deleting addresses. |
 
 ### Technology Stack
-
-![1715333592958](image/README/1715333592958.png)
