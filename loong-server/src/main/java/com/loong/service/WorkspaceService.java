@@ -1,5 +1,7 @@
 package com.loong.service;
 
+import java.time.LocalDate;
+
 import com.loong.vo.BusinessDataVO;
 import com.loong.vo.DishOverViewVO;
 import com.loong.vo.OrderOverViewVO;
@@ -13,6 +15,6 @@ public interface WorkspaceService {
 
     OrderOverViewVO ordersOverview();
 
-    BusinessDataVO businessOverview();
+    BusinessDataVO businessOverview(LocalDate begin);
     
 }

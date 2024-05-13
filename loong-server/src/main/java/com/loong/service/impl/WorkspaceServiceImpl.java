@@ -71,14 +71,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public BusinessDataVO businessOverview() {
-        String today = LocalDate.now().toString();
+    public BusinessDataVO businessOverview(LocalDate begin) {
+        String today = begin.toString();
         int newUsers = userMapper.selectByCreateDate(today);
         int validOrderCount = ordersMapper.selectByStatusAndDate(Orders.COMPLETED, today);
+        // query the total number of orders
         int sum = ordersMapper.countByStatus(null);
-        double orderCompleteRate = (double) (validOrderCount/sum);
-        double turnover = ordersMapper.sumByStatusAndDate(Orders.COMPLETED,today);
-        double unitPrice = turnover/validOrderCount;
+        double orderCompleteRate = 0.0;
+
+        if (sum != 0) {
+            orderCompleteRate = (double) validOrderCount / sum;
+        }
+        double turnover = ordersMapper.sumByStatusAndDate(Orders.COMPLETED, today);
+        double unitPrice = turnover / validOrderCount;
 
         BusinessDataVO businessDataVO = new BusinessDataVO();
         businessDataVO.setValidOrderCount(validOrderCount);

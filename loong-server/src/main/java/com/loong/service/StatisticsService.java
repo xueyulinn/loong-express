@@ -2,6 +2,8 @@ package com.loong.service;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.loong.vo.OrderReportVO;
 import com.loong.vo.SalesTop10ReportVO;
 import com.loong.vo.TurnoverReportVO;
@@ -16,5 +18,7 @@ public interface StatisticsService {
     OrderReportVO ordersStatistics(String begin, String end);
 
     SalesTop10ReportVO salesTop10(String begin, String end);
+
+    void exportExcel(HttpServletResponse response);
     
 }

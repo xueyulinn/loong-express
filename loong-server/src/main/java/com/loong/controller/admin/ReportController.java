@@ -2,6 +2,8 @@ package com.loong.controller.admin;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,5 +45,10 @@ public class ReportController {
     public Result<SalesTop10ReportVO> salesTop10(String begin, String end) {
         SalesTop10ReportVO salesTop10ReportVO = statisticsService.salesTop10(begin, end);
         return Result.success(salesTop10ReportVO);
+    }
+
+    @GetMapping("/export")
+    public void exportExcel(HttpServletResponse response) {
+        statisticsService.exportExcel(response);
     }
 }
