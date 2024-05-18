@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project is a restaurant management system for my aunt who owns loong-express.
+Loong-express is a restaurant management system that provides order tracking, menue editing and staff management for managers and food ordering for customers.
 
 ### Project preview
 
@@ -15,6 +15,8 @@ admin interfaces:
 mini-app:
 
 ![1715340042288](image/README/1715340042288.png)
+
+![1715581863612](image/README/1715581863612.png)
 
 ### Modules Introduction
 
@@ -41,3 +43,5 @@ User
 | Personal Information     | The user's personal information interface provides access to historical orders and address management. Users can view historical order information, use the reorder function, and manage delivery addresses, including setting default addresses, adding, modifying, and deleting addresses. |
 
 ### Technology Stack
+
+![1715998516785](image/README/1715998516785.png)
