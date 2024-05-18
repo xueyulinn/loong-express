@@ -1,5 +1,8 @@
 # loong-express
 
+* en [English](README.md)(README.md)
+* zh_CN [简体中文](README.zh-CN.md)(README.zh-CN.md)
+
 ## Introduction
 
 Loong-express is a restaurant management system that provides order tracking, menue editing and staff management for managers and food ordering for customers.
@@ -16,7 +19,7 @@ mini-app:
 
 ![1715340042288](image/README/1715340042288.png)
 
-![1715581863612](image/README/1715581863612.png)
+![1716016289607](image/README/1716016289607.png)
 
 ### Modules Introduction
 
