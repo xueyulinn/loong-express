@@ -1,5 +1,15 @@
 # 神龙中餐
 
+
+<div style="display: flex; justify-content: center;">
+    <img src="image/README/logo.png" alt="Centered Logo" width="30%">
+</div>
+
+![Static Badge](https://img.shields.io/badge/Vue.js-2.0-green?logo=vuedotjs)  ![Static Badge](https://img.shields.io/badge/SpringBoot-2.7.3-green?logo=springboot)  ![Static Badge](https://img.shields.io/badge/MySQL-8.0.36-green?logo=mysql)  ![Static Badge](https://img.shields.io/badge/Redis-6.0.16-green?logo=redis)  ![Static Badge](https://img.shields.io/badge/OpenJDK-17.0.10-green?logo=openjdk)  ![Static Badge](https://img.shields.io/badge/NGINX-1.18.0-green?logo=nginx)  ![Static Badge](https://img.shields.io/badge/Ubuntu-22.04-green?logo=ubuntu)
+
+* en [English](README.md)(README.md)
+* zh_CN [简体中文](README.zh-CN.md)(README.zh-CN.md)
+
 ## 简介
 
 基于黑马程序员苍穹外卖，本项目是专门为餐饮企业（餐厅、饭店）定制的一款软件产品，包括 系统管理后台 和 小程序端应用 两部分。项目涉及少量的Spring定时任务，缓存和Redis的使用，适合学习完Java Web的小白学习。
@@ -45,7 +55,3 @@
 | 点餐-购物车 | 用户选中的菜品就会加入用户的购物车, 主要包含 查询购物车、加入购物车、删除购物车、清空购物车等功能 |
 | 订单支付    | 用户选完菜品/套餐后, 可以对购物车菜品进行结算支付, 这时就需要进行订单的支付                       |
 | 个人信息    | 在个人中心页面中会展示当前用户的基本信息, 用户可以管理收货地址, 也可以查询历史订单数据            |
-
-### 技术栈
-
-![1715998516785](image/README/1715998516785.png)
