@@ -12,7 +12,7 @@
 
 ## 简介
 
-[预览网址](www.loongexpress.xyz)
+[预览网址](http://www.loongexpress.xyz)
 
 基于黑马程序员苍穹外卖，本项目是专门为餐饮企业（餐厅、饭店）定制的一款软件产品，包括 系统管理后台 和 小程序端应用 两部分。项目涉及少量的Spring定时任务，缓存和Redis的使用，适合学习完Java Web的小白学习。
 
